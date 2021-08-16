@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 interface Placa {
-  prefixo: string;
+  prefixo?: string;
   nome: string;
   preco: number;
   url: string;
@@ -44,12 +44,12 @@ export function GraphicFilteredBySearch() {
     let initial;
 
     filteredParams.forEach((param) => {
-      if (nome.toLowerCase().indexOf(param.toLowerCase()) !== -1) {
-        initial = nome.toLowerCase().indexOf(param.toLowerCase());
+      if (nome?.toLowerCase()?.indexOf(param?.toLowerCase()) !== -1) {
+        initial = nome?.toLowerCase()?.indexOf(param?.toLowerCase());
       }
     });
 
-    return nome.slice(initial, initial + 14);
+    return nome?.slice(initial, initial + 14);
   }
 
   const [searchByName, setSearchByName] = useState({
@@ -69,7 +69,7 @@ export function GraphicFilteredBySearch() {
 
   const removeWith = (products: Placa[], removeBy: string) => {
     const filter = products.filter((product) => {
-      if (product.nome.toLowerCase().indexOf(` ${removeBy} `) === -1) {
+      if (product?.nome?.toLowerCase()?.indexOf(` ${removeBy} `) === -1) {
         return product;
       }
     });
@@ -77,20 +77,26 @@ export function GraphicFilteredBySearch() {
     return filter;
   };
 
+  console.log(filterData);
+
   const lowAndHightValues = (products: Placa[]) => {
-    let hight: Placa;
-    let low: Placa;
-    products.forEach((item) => {
-      if (item?.preco > hight?.preco || !hight?.preco) {
-        hight = item;
+    let low = { ...products[0] };
+    let hight = { ...products[0] };
+
+    products?.map((item) => {
+      if (item?.preco < low?.preco && item?.preco !== 0) {
+        low = item;
+        return;
       }
 
-      if (item?.preco < low?.preco || !low?.preco) {
-        low = item;
+      if (item?.preco > hight?.preco) {
+        hight = item;
+        return;
       }
     });
 
-    setCardsValue({ hight, low });
+    setCardsValue({ low, hight });
+    return;
   };
 
   const filterByName = (nome: string, products: Placa[]) => {
@@ -98,14 +104,36 @@ export function GraphicFilteredBySearch() {
       if (
         item?.nome
           ?.replaceAll(" ", "")
-          .toLocaleLowerCase()
-          .indexOf(nome.replaceAll(" ", "").toLocaleLowerCase()) > -1
+          ?.toLocaleLowerCase()
+          ?.indexOf(nome?.replaceAll(" ", "")?.toLocaleLowerCase()) > -1
       ) {
         return item;
       }
     });
 
     return filter;
+  };
+
+  const removingEqualItensInArray = (products: Placa[]) => {
+    const uniqueProducts: Placa[] = [];
+
+    products.forEach((item) => {
+      const exitsItem = uniqueProducts?.find((findItem) => {
+        if (
+          findItem?.nome === item?.nome &&
+          findItem?.preco === item?.preco &&
+          findItem?.loja === item?.loja
+        ) {
+          return findItem;
+        }
+      });
+
+      if (!exitsItem) {
+        uniqueProducts.push(item);
+      }
+    });
+
+    return uniqueProducts;
   };
 
   const search = (values?: SearchParams, productList?: Placa[]) => {
@@ -137,11 +165,11 @@ export function GraphicFilteredBySearch() {
         }
       });
       const filteredByName = filterByName(params.nome, filter);
-      setFilterData(filteredByName);
+      setFilterData(removingEqualItensInArray(filteredByName));
       lowAndHightValues(filteredByName);
     } else {
       const filteredByName = filterByName(params.nome, products);
-      setFilterData(filteredByName);
+      setFilterData(removingEqualItensInArray(filteredByName));
       lowAndHightValues(filteredByName);
     }
   };
@@ -154,9 +182,9 @@ export function GraphicFilteredBySearch() {
             ...item,
             preco: Number(
               item.preco
-                .replaceAll("R$", "")
-                .replaceAll(".", "")
-                .replaceAll(",", ".")
+                ?.replaceAll("R$", "")
+                ?.replaceAll(".", "")
+                ?.replaceAll(",", ".")
             ),
             prefixo: getShortName(item.nome),
           };

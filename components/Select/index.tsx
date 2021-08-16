@@ -107,14 +107,14 @@ export function Select() {
           setData(
             productList
               .map((item) => {
-                if (item.nome === e.target.value) {
+                if (item?.nome === e?.target?.value) {
                   const parsed = {
                     ...item,
                     preco: Number(
                       item?.preco
-                        .replaceAll("R$", "")
-                        .replaceAll(".", "")
-                        .replaceAll(",", ".")
+                        ?.replaceAll("R$", "")
+                        ?.replaceAll(".", "")
+                        ?.replaceAll(",", ".")
                     ),
                   };
                   return parsed;
