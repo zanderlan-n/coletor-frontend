@@ -67,7 +67,6 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: 200px;
   gap: 50px;
 }
 
@@ -77,6 +76,9 @@
   border: 2px solid #76b900;
   border-radius: 2px;
   padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   a {
     text-decoration: none;
@@ -113,6 +115,9 @@
   border: 2px solid #e53e3e;
   border-radius: 2px;
   padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   a {
     text-decoration: none;
@@ -141,4 +146,8 @@
     color: rgb(68, 68, 68);
     font-size: 14px;
   }
+}
+
+.image {
+  width: 150px;
 }

@@ -1,0 +1,47 @@
+.container {
+  margin: 20px 0;
+}
+
+.containerInput {
+  width: 600px;
+  border: 1px solid #76b900;
+  border-radius: 3px;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 10px;
+}
+
+.icon {
+  width: 25px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input {
+  border: none;
+  flex: 1;
+  margin-right: 5px;
+}
+
+.containerItem {
+  z-index: 999;
+  position: absolute;
+  max-height: 250px;
+  width: 600px;
+  overflow-y: scroll;
+
+  background-color: white;
+}
+
+.item {
+  padding: 10px;
+}
+
+.item:hover {
+  background-color: #f0efef;
+  cursor: pointer;
+}

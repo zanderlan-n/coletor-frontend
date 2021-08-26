@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import {
   BarChart,
   CartesianGrid,
@@ -17,14 +19,16 @@ import productList from "../../../service/productList.json";
 import filteredParams from "../../../filteredParams.json";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 interface Placa {
   prefixo?: string;
-  nome: string;
-  preco: number;
-  url: string;
+  nome?: string;
+  preco?: number;
+  url?: string;
   loja?: string;
   dataDaColeta: string;
+  imageURL?: string;
 }
 
 interface Cards {
@@ -37,6 +41,7 @@ interface SearchParams {
   data: string;
   searchBy: string;
   remove: string;
+  maxValue: string;
 }
 
 export function GraphicFilteredBySearch() {
@@ -57,6 +62,7 @@ export function GraphicFilteredBySearch() {
     data: "",
     searchBy: "day",
     remove: "",
+    maxValue: "",
   });
 
   const [formattedData, setFormattedData] = useState<Placa[]>([]);
@@ -76,8 +82,6 @@ export function GraphicFilteredBySearch() {
 
     return filter;
   };
-
-  console.log(filterData);
 
   const lowAndHightValues = (products: Placa[]) => {
     let low = { ...products[0] };
@@ -152,6 +156,12 @@ export function GraphicFilteredBySearch() {
       products = removeWith(products, params?.remove);
     }
 
+    if (params?.maxValue) {
+      products = products?.filter(
+        (item) => item?.preco <= Number(params?.maxValue)
+      );
+    }
+
     if (params.data !== "") {
       const filter = products.filter((item) => {
         if (params.searchBy === "day") {
@@ -175,7 +185,7 @@ export function GraphicFilteredBySearch() {
   };
 
   useEffect(() => {
-    const parsedData = productList
+    const parsedData: Placa[] = productList
       .map((item) => {
         if (getShortName(item.nome) !== "") {
           return {
@@ -257,10 +267,10 @@ export function GraphicFilteredBySearch() {
           placeholder="Data de busca"
         >
           Data de busca
-          {filterDates.map((date) => (
+          {filterDates.map((date, index) => (
             <option
               selected={searchByName.data === date}
-              key={date}
+              key={index}
               value={date}
             >
               {date}
@@ -282,6 +292,14 @@ export function GraphicFilteredBySearch() {
             setSearchByName({ ...searchByName, remove: e.target.value })
           }
         />
+
+        <input
+          type="number"
+          placeholder="Valor máximo"
+          onChange={(e) =>
+            setSearchByName({ ...searchByName, maxValue: e.target.value })
+          }
+        />
         <button onClick={() => search()}>Buscar</button>
       </section>
 
@@ -298,6 +316,10 @@ export function GraphicFilteredBySearch() {
             <p className={styles.loja}>{cardsValue?.low?.loja}</p>
             <p className={styles.data}>{cardsValue?.low?.dataDaColeta}</p>
           </a>
+
+          {cardsValue?.low?.imageURL && (
+            <img className={styles.image} src={cardsValue.low.imageURL} />
+          )}
         </section>
 
         <section className={styles.highestValueFound}>
@@ -312,6 +334,10 @@ export function GraphicFilteredBySearch() {
             <p className={styles.loja}>{cardsValue?.hight?.loja}</p>
             <p className={styles.data}>{cardsValue?.hight?.dataDaColeta}</p>
           </a>
+
+          {cardsValue?.hight?.imageURL && (
+            <img className={styles.image} src={cardsValue.hight.imageURL} />
+          )}
         </section>
       </section>
 
