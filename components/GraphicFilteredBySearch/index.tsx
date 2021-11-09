@@ -218,6 +218,8 @@ export function GraphicFilteredBySearch() {
     search({ ...searchByName, data: dates[dates.length - 1] }, parsedData);
   }, []);
 
+  console.log(searchByName);
+
   return (
     <div className={styles.container}>
       <h1 style={{ margin: "30px 0px" }}>Filtro a cada pesquisa feita</h1>
@@ -237,7 +239,16 @@ export function GraphicFilteredBySearch() {
                 }
               });
               setFilterDates(removeEquals);
-              setSearchByName({ ...searchByName, searchBy: "day" });
+              setSearchByName({
+                ...searchByName,
+                searchBy: "day",
+                data: removeEquals[0],
+              });
+              search({
+                ...searchByName,
+                searchBy: "day",
+                data: removeEquals[0],
+              });
             } else {
               const dates = [];
 
@@ -247,6 +258,18 @@ export function GraphicFilteredBySearch() {
                 }
                 setFilterDates(dates);
                 setSearchByName({ ...searchByName, searchBy: "search" });
+              });
+
+              setSearchByName({
+                ...searchByName,
+                searchBy: "day",
+                data: dates[0],
+              });
+
+              search({
+                ...searchByName,
+                searchBy: "day",
+                data: dates[0],
               });
             }
           }}

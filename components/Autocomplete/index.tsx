@@ -8,11 +8,13 @@ import ReactLoading from "react-loading";
 interface AutocompleteProps {
   data: Placa[];
   setOptionSelected: (value: Placa) => void;
+  optionSelected: Placa[];
 }
 
 export const Autocomplete = ({
   data,
   setOptionSelected,
+  optionSelected,
 }: AutocompleteProps) => {
   const [value, setValue] = useState("");
   const [valueInputed, setValueInputed] = useState("");
@@ -29,18 +31,31 @@ export const Autocomplete = ({
     setOpen(true);
   };
 
-  const loadOptions = data?.filter((item) => {
-    if (value) {
-      if (
-        item?.nome
-          ?.toLowerCase()
-          ?.replaceAll(" ", "")
-          ?.indexOf(value?.toLowerCase()?.replaceAll(" ", "")) !== -1
-      ) {
-        return item?.nome && item;
+  const loadOptions = data
+    ?.filter((item) => {
+      if (value) {
+        if (
+          item?.nome
+            ?.toLowerCase()
+            ?.replaceAll(" ", "")
+            ?.indexOf(value?.toLowerCase()?.replaceAll(" ", "")) !== -1
+        ) {
+          return item?.nome && item;
+        }
       }
-    }
-  });
+    })
+    .sort((a, b) => {
+      const preco1 = Number(
+        a?.preco?.replaceAll("R$", "")?.replaceAll(".", "").replaceAll(",", ".")
+      );
+      const preco2 = Number(
+        b?.preco?.replaceAll("R$", "")?.replaceAll(".", "").replaceAll(",", ".")
+      );
+
+      if (preco1 < preco2) {
+        return -1;
+      }
+    });
 
   useEffect(() => {
     setLoading(false);
@@ -75,23 +90,37 @@ export const Autocomplete = ({
 
       {open && (
         <div className={styles.containerItem}>
-          {loadOptions?.map((option, index) => (
-            <div
-              key={index}
-              className={styles.item}
-              onClick={() => {
-                setOptionSelected(option);
-                setValue(option?.nome);
-                setOpen(false);
-              }}
-            >
-              <p>{option?.nome}</p>
+          {loadOptions?.map((option, index) => {
+            return (
+              <div
+                key={index}
+                className={`${styles.item} ${
+                  option?.nome === optionSelected[0]?.nome
+                    ? styles.selected
+                    : styles.item
+                }`}
+                onClick={() => {
+                  setOptionSelected(option);
+                  setValue(option?.nome);
+                  setOpen(false);
+                }}
+              >
+                <p>{option?.nome}</p>
 
-              <p>
-                <strong>{option?.quantidade} quantidade</strong> {option?.loja}
-              </p>
-            </div>
-          ))}
+                <p>
+                  <strong>{option?.quantidade} quantidade</strong>{" "}
+                  <span style={{ color: "#76b900" }}>{option?.loja}</span>
+                </p>
+
+                <p>
+                  Primeiro registro:{" "}
+                  <strong>
+                    {option?.preco} {option?.dataDaColeta}
+                  </strong>
+                </p>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

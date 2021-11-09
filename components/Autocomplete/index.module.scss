@@ -30,7 +30,7 @@
 .containerItem {
   z-index: 999;
   position: absolute;
-  max-height: 250px;
+  max-height: 350px;
   width: 600px;
   overflow-y: scroll;
 
@@ -44,4 +44,9 @@
 .item:hover {
   background-color: #f0efef;
   cursor: pointer;
+}
+
+.selected {
+  background-color: #f0efef;
+  color: #76b900;
 }

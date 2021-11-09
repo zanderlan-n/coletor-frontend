@@ -108,6 +108,7 @@ export function Select() {
 
       <Autocomplete
         data={appearMoreThanOnce}
+        optionSelected={data}
         setOptionSelected={(option) => {
           setData(
             productList
@@ -230,7 +231,7 @@ export function Select() {
       )}
 
       <div className={styles.chart}>
-        <ResponsiveContainer width="99%" height="80%">
+        <ResponsiveContainer width="49%" height="80%">
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="dataDaColeta" />
@@ -263,6 +264,30 @@ export function Select() {
               }}
             />
           </BarChart>
+        </ResponsiveContainer>
+        <ResponsiveContainer width="49%" height="80%">
+          <LineChart data={data}>
+            <XAxis dataKey="dataDaColeta" />
+            <YAxis
+              width={120}
+              tickFormatter={(e) => {
+                return e.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                });
+              }}
+            />
+            <Tooltip
+              formatter={(value) =>
+                value.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })
+              }
+            />
+
+            <Line type="monotone" dataKey="preco" stroke="#76b900" />
+          </LineChart>
         </ResponsiveContainer>
       </div>
     </div>
